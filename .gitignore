@@ -1,0 +1,44 @@
+# Binaries
+bin/
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+
+# Build output
+/dist/
+/build/
+/out/
+
+# Dependency directories (if vendored)
+vendor/
+
+# IDE/editor settings
+.vscode/
+.idea/
+*.swp
+*.swo
+*.DS_Store
+
+# Logs
+*.log
+
+# OS files
+Thumbs.db
+ehthumbs.db
+.DS_Store
+
+# Shell history
+*.zsh_history
+*.bash_history
+
+# Dotfile backups
+*.bak
+*.old
+
+# Avoid committing downloaded packages
+*.dmg
+*.zip
+
