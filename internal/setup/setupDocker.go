@@ -1,5 +1,0 @@
-package setup
-
-func SetupDocker() {
-
-}
