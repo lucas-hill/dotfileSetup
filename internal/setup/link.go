@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 )
 
-func linkDotfiles(sourceDir string) error {
+func LinkDotfiles(sourceDir string) error {
 	files, err := os.ReadDir(sourceDir)
 	if err != nil {
 		return err
