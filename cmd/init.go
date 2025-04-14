@@ -1,13 +1,13 @@
 package cmd
 
 import (
-	"bufio"
 	"fmt"
 	"os"
-	"os/exec"
 	"path/filepath"
-	"strings"
 
+	tea "github.com/charmbracelet/bubbletea"
+	"github.com/lucas-hill/dotfileSetup/internal/setup"
+	"github.com/lucas-hill/dotfileSetup/internal/tui/textinput"
 	"github.com/spf13/cobra"
 )
 
@@ -25,24 +25,22 @@ var initCmd = &cobra.Command{
 	Use:   "init",
 	Short: "Clone and in itialize dotfiles from a repository",
 	Run: func(cmd *cobra.Command, args []string) {
-		reader := bufio.NewReader(os.Stdin)
-
 		if repoURL == "" {
-			fmt.Printf("Enter Git repo URL [%s]: ", defaultRepo)
-			input, _ := reader.ReadString('\n')
-			repoURL = strings.TrimSpace(input)
-			if repoURL == "" {
-				repoURL = defaultRepo
+			val, err := promptForInput("Enter Git repo URL to clone:", defaultRepo)
+			if err != nil {
+				fmt.Printf(" Failed to get repo input: %v", err)
+				os.Exit(1)
 			}
+			repoURL = val
 		}
 
 		if directoryName == "" {
-			fmt.Printf("Enter local folder name [%s] ", defaultDirectoryName)
-			input, _ := reader.ReadString('\n')
-			directoryName = strings.TrimSpace(input)
-			if directoryName == "" {
-				directoryName = defaultDirectoryName
+			val, err := promptForInput("Enter the local directory name to create:", defaultDirectoryName)
+			if err != nil {
+				fmt.Printf("Failed to get the directory name input %v\n", err)
+				os.Exit(1)
 			}
+			directoryName = val
 		}
 
 		cloneDir := filepath.Join(os.Getenv("HOME"), directoryName)
@@ -51,10 +49,8 @@ var initCmd = &cobra.Command{
 		if _, err := os.Stat(cloneDir); err == nil {
 			fmt.Println("Folder already exists. Skipping clone")
 		} else {
-			cmd := exec.Command("git", "clone", repoURL, cloneDir)
-			cmd.Stdout = os.Stdout
-			cmd.Stderr = os.Stderr
-			if err := cmd.Run(); err != nil {
+			err := setup.CloneRepo(repoURL, cloneDir)
+			if err != nil {
 				fmt.Printf("Failed to clone repo: %v\n", err)
 				os.Exit(1)
 			}
@@ -62,4 +58,32 @@ var initCmd = &cobra.Command{
 
 		fmt.Println("Dotfiles cloned and ready in:", cloneDir)
 	},
+}
+
+// TODO:
+// Extract out later if this is used more than just here
+func promptForInput(prompt, defaultValue string) (string, error) {
+	model := textinput.New(prompt, prompt, defaultValue)
+	program := tea.NewProgram(model)
+	finalModel, err := program.Run()
+	if err != nil {
+		return "", err
+	}
+	tiModel, ok := finalModel.(textinput.Model)
+	if !ok {
+		return "", fmt.Errorf("unexptedted model type")
+	}
+
+	if tiModel.Quit {
+		fmt.Println("Cancelled by user.\nGoodbye...")
+		os.Exit(0)
+	}
+
+	return tiModel.Entered, nil
+}
+
+func init() {
+	rootCmd.AddCommand(initCmd)
+	initCmd.Flags().StringVar(&repoURL, "repo", "", "Git repository URL")
+	initCmd.Flags().StringVar(&directoryName, "dir", "", "Target directory name")
 }
