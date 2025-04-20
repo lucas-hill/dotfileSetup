@@ -1,0 +1,82 @@
+# ===============================
+# Linker Configuration File
+# ===============================
+# Defines source -> destination symlinks
+# Supports OS-specific and default configs
+# You can add `darwin`, `linux`, `windows`, and a `default` section
+
+darwin:
+  # macOS-specific configs
+  - name: zsh
+    tags: [zsh, shell, core]
+    links: 
+      - destination: ~/.zshrc
+      - destination: ~.zsh
+
+  - name: nvim
+    tags: [neovim, nvim, core, ide]
+    links:
+      - destination: ~/.config/nvim
+
+  - name: vim
+    tags: [vim, core, ide]
+    links: 
+      - destination: ~/.vimrc
+
+  - name: aerospace
+    tags: [tilingManager, core]
+    links:
+      - destination: ~/.config/aerospace/aerospace.toml
+
+  - name: starship
+    tags: [terminal]
+    links:
+      - destination: ~/.config/starship.toml
+
+  - name: git
+    tags: [git, core]
+    links:
+      - destination: ~/.gitconfig
+
+  - name: vscode
+    tags: [ide]
+    links:
+      - destination: ~/.vscode/extensions/extensions.json
+      - destination: ~/Library/Application Support/Code/User/keybindings.json
+      - destination: ~/Library/Application Support/Code/User/settings.json
+      - destination: ~/Library/Application Support/Code/User/snippets/
+      # - destination: ~/Library/Application Support/Code/User/snippets/go.code-snippets
+      # - destination: ~/Library/Application Support/Code/User/snippets/php.code-snippets
+      # - destination: ~/Library/Application Support/Code/User/snippets/vue.code-snippets
+
+  - name: tmux
+    tags: [terminal, tmux, core]
+    links:
+      - destination: ~/.tmux.conf
+
+  - name: lazygit
+    tags: [git, terminal, core]
+    links:
+      - destination: ~/Library/Application Support/lazygit/config.yml
+
+  - name: ghostty
+    tags: [terminal, tmux, core]
+    links:
+      - destination: ~/.config/ghostty/config
+
+  - name: wezterm
+    tags: [terminal, tmux, core]
+    links:
+      - destination: ~/.config/wezterm/wezterm.lua
+
+  - name: iterm2
+    tags: [terminal, tmux, core]
+    links:
+      - destination: ~/com.googlecode.iterm2.plist
+
+
+linux:
+  # Linux-specific configs
+
+windows:
+  # Windows paths use escaped backslashes or raw strings
